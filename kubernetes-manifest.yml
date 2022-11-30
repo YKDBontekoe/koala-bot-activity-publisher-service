@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: koala-activity-publisher-service
+spec:
+    replicas: 1
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+    selector:
+        matchLabels:
+          app: koala-activity-publisher-service
+    template:
+        metadata:
+          labels:
+            app: koala-activity-publisher-service
+        spec:
+          restartPolicy: Always
+          containers:
+          - name: koala-activity-publisher-service
+            image: ykdbonteregistry.azurecr.io/koala-activity-publisher-service:v1
+            imagePullPolicy: Always
+            ports:
+              - containerPort: 5001
+            env:
+              - name: DOTNET_ENVIRONMENT
+                value: "Production"
