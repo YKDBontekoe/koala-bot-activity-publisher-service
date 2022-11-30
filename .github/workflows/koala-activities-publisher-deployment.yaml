@@ -20,6 +20,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+            - uses: microsoft/variable-substitution@v1
+              name: App Settings Variable Substitution
+              with:
+                files: 'appsettings.json'
+              env:
+                ServiceBus.ConnectionString: ${{ secrets.SERVICE_BUS_CONNECTION_STRING }}
+                Discord.Token: ${{ secrets.DISCORD_TOKEN }}
             - uses: azure/login@v1.4.3
               name: Azure login
               with:
