@@ -24,7 +24,6 @@ public class MessageService : IMessageService
         var sender = _serviceBusClient.CreateSender(_serviceBusOptions.UserActivitiesQueueName);
         var message = new ServiceBusMessage(JsonConvert.SerializeObject(activity));
         
-        Console.WriteLine(activity.Name);
         await sender.SendMessageAsync(message);
     }
 }
