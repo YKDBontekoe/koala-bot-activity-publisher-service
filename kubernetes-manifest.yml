@@ -34,3 +34,5 @@ spec:
             env:
               - name: DOTNET_ENVIRONMENT
                 value: "Production"
+          imagePullSecrets:
+            - name: ykdbonteregistry
