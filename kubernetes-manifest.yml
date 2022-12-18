@@ -23,11 +23,11 @@ spec:
             image: ykdbonteregistry.azurecr.io/koala-activity-publisher-service:latest
             resources:
               requests:
-                cpu: 100m
+                cpu: 500m
                 memory: 128Mi
               limits:
                 cpu: 1000m
-                memory: 200Mi
+                memory: 500Mi
             imagePullPolicy: Always
             ports:
               - containerPort: 5001
