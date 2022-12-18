@@ -20,7 +20,7 @@ spec:
           restartPolicy: Always
           containers:
           - name: koala-activity-publisher-service
-            image: ykdbonteregistry.azurecr.io/koala-activity-publisher-service:v1
+            image: ykdbonteregistry.azurecr.io/koala-activity-publisher-service:latest
             resources:
               requests:
                 cpu: 100m
