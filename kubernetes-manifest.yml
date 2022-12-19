@@ -22,9 +22,6 @@ spec:
           - name: koala-activity-publisher-service
             image: ykdbonteregistry.azurecr.io/koala-activity-publisher-service:latest
             resources:
-              requests:
-                cpu: 500m
-                memory: 128Mi
               limits:
                 cpu: 1000m
                 memory: 500Mi
