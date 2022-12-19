@@ -1,0 +1,37 @@
+name: koala-activities-publisher-deployment
+"on":
+    push:
+        branches:
+            - main
+    workflow_dispatch: {}
+env:
+    ACR_RESOURCE_GROUP: koala-group
+    AZURE_CONTAINER_REGISTRY: ykdbonteregistry
+    CLUSTER_NAME: koala-cluster
+    CLUSTER_RESOURCE_GROUP: koala-group
+    CONTAINER_NAME: koala-activity-publisher-service
+    DEPLOYMENT_MANIFEST_PATH: |
+        ./kubernetes-manifest.yml
+jobs:
+    buildImage:
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: microsoft/variable-substitution@v1
+              name: App Settings Variable Substitution
+              with:
+                files: 'appsettings.json'
+              env:
+                ServiceBus.ConnectionString: ${{ secrets.SERVICE_BUS_CONNECTION_STRING }}
+                Discord.Token: ${{ secrets.DISCORD_TOKEN }}
+            - uses: azure/login@v1.4.3
+              name: Azure login
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - name: Build and push image to ACR
+              run: az acr build --image ${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
