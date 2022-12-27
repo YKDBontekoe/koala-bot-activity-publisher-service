@@ -55,6 +55,11 @@ public class ActivityListener : IActivityListener
             userActivity.Name = activity.Name;
             userActivity.Type = activity.Type.ToString();
             userActivity.StartedAt = DateTimeOffset.UtcNow;
+            userActivity.User.Guilds = user.MutualGuilds.Select(x => new Guild()
+            {
+                Id = x.Id,
+                Name = x.Name,
+            });
             userActivity.User = new User
             {
                 Id = user.Id,
