@@ -33,7 +33,13 @@ public class ActivityListener : IActivityListener
     {
         if (user.IsBot) return;
         
-        foreach (var activity in newPresence.Activities)
+        await SendActivitiesUpdates(user, newPresence);
+        await SendStatusUpdates(user, newPresence);
+    }
+
+    private async Task SendActivitiesUpdates(SocketUser user, SocketPresence presence)
+    {
+        foreach (var activity in presence.Activities)
         {
             Activity userActivity = new ();
             var details = activity.Details;
@@ -66,6 +72,80 @@ public class ActivityListener : IActivityListener
                 Username = user.Username,
             };
             await _messageService.SendMessage(userActivity);
+        }
+    }
+
+    private async Task SendStatusUpdate(SocketUser user, SocketPresence presence, string statusType, string statusDetails)
+    {
+        await _messageService.SendMessage(new Activity
+        {
+            User = new User
+            {
+                Id = user.Id,
+                Username = user.Username,
+            },
+            StartedAt = DateTimeOffset.UtcNow,
+            Type = statusType,
+            Details = user.Username + " is " + statusDetails,
+            Name = statusDetails,
+        });
+    }
+
+    private async Task SendOfflineUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "Status", "Offline");
+    }
+
+    private async Task SendOnlineUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "Status", "Online");
+    }
+
+    private async Task SendDoNotDisturbUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "Status", "Do Not Disturb");
+    }
+
+    private async Task SendIdleUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "Idle", "Idle");
+    }
+
+    private async Task SendInvisibleUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "Invisible", "Invisible");
+    }
+
+    private async Task SendAfkUpdate(SocketUser user, SocketPresence presence)
+    {
+        await SendStatusUpdate(user, presence, "AFK", "AFK");
+    }
+
+    private async Task SendStatusUpdates(SocketUser user, SocketPresence presence)
+    {
+        switch (presence.Status)
+        {
+            case UserStatus.Offline:
+                await SendOfflineUpdate(user, presence);
+                break;
+            case UserStatus.Online:
+                await SendOnlineUpdate(user, presence);
+                break;
+            case UserStatus.DoNotDisturb:
+                await SendDoNotDisturbUpdate(user, presence);
+                break;
+            case UserStatus.Idle:
+                await SendIdleUpdate(user, presence);
+                break;
+            case UserStatus.Invisible:
+                await SendInvisibleUpdate(user, presence);
+                break;
+            case UserStatus.AFK:
+                await SendAfkUpdate(user, presence);
+                break;
+            default:
+                Console.WriteLine("Unknown status");
+                break;
         }
     }
 
