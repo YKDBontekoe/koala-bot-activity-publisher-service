@@ -26,20 +26,13 @@ public class ActivityListener : IActivityListener
     public async Task InitializeAsync()
     {
         await InitializeDiscordClient();
-        _client.PresenceUpdated += Client_PresenceUpdated;
+        _client.PresenceUpdated += SendActivitiesUpdates;
+        _client.PresenceUpdated += SendStatusUpdates;
     }
 
-    private async Task Client_PresenceUpdated(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
+    private async Task SendActivitiesUpdates(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
     {
-        if (user.IsBot) return;
-        
-        await SendActivitiesUpdates(user, newPresence);
-        await SendStatusUpdates(user, newPresence);
-    }
-
-    private async Task SendActivitiesUpdates(SocketUser user, SocketPresence presence)
-    {
-        foreach (var activity in presence.Activities)
+        foreach (var activity in newPresence.Activities)
         {
             Activity userActivity = new ();
             var details = activity.Details;
@@ -75,7 +68,7 @@ public class ActivityListener : IActivityListener
         }
     }
 
-    private async Task SendStatusUpdate(SocketUser user, SocketPresence presence, string statusType, string statusDetails)
+    private async Task SendStatusUpdate(IUser user, string statusType, string statusDetails)
     {
         await _messageService.SendMessage(new Activity
         {
@@ -91,57 +84,57 @@ public class ActivityListener : IActivityListener
         });
     }
 
-    private async Task SendOfflineUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendOfflineUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "Status", "Offline");
+        await SendStatusUpdate(user, "Status", "Offline");
     }
 
-    private async Task SendOnlineUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendOnlineUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "Status", "Online");
+        await SendStatusUpdate(user, "Status", "Online");
     }
 
-    private async Task SendDoNotDisturbUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendDoNotDisturbUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "Status", "Do Not Disturb");
+        await SendStatusUpdate(user, "Status", "Do Not Disturb");
     }
 
-    private async Task SendIdleUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendIdleUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "Idle", "Idle");
+        await SendStatusUpdate(user, "Idle", "Idle");
     }
 
-    private async Task SendInvisibleUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendInvisibleUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "Invisible", "Invisible");
+        await SendStatusUpdate(user, "Invisible", "Invisible");
     }
 
-    private async Task SendAfkUpdate(SocketUser user, SocketPresence presence)
+    private async Task SendAfkUpdate(SocketUser user)
     {
-        await SendStatusUpdate(user, presence, "AFK", "AFK");
+        await SendStatusUpdate(user, "AFK", "AFK");
     }
 
-    private async Task SendStatusUpdates(SocketUser user, SocketPresence presence)
+    private async Task SendStatusUpdates(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
     {
-        switch (presence.Status)
+        switch (newPresence.Status)
         {
             case UserStatus.Offline:
-                await SendOfflineUpdate(user, presence);
+                await SendOfflineUpdate(user);
                 break;
             case UserStatus.Online:
-                await SendOnlineUpdate(user, presence);
+                await SendOnlineUpdate(user);
                 break;
             case UserStatus.DoNotDisturb:
-                await SendDoNotDisturbUpdate(user, presence);
+                await SendDoNotDisturbUpdate(user);
                 break;
             case UserStatus.Idle:
-                await SendIdleUpdate(user, presence);
+                await SendIdleUpdate(user);
                 break;
             case UserStatus.Invisible:
-                await SendInvisibleUpdate(user, presence);
+                await SendInvisibleUpdate(user);
                 break;
             case UserStatus.AFK:
-                await SendAfkUpdate(user, presence);
+                await SendAfkUpdate(user);
                 break;
             default:
                 Console.WriteLine("Unknown status");
