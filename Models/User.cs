@@ -6,4 +6,5 @@ public class User
     public string Username { get; set; }
     
     public IEnumerable<Guild> Guilds { get; set; }
+    public string? NickName { get; set; }
 }

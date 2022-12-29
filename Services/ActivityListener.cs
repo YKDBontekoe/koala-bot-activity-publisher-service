@@ -32,6 +32,10 @@ public class ActivityListener : IActivityListener
 
     private async Task SendActivitiesUpdates(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
     {
+        if (user.IsBot)
+        {
+            return;
+        }
         foreach (var activity in newPresence.Activities)
         {
             Activity userActivity = new ();
@@ -54,15 +58,16 @@ public class ActivityListener : IActivityListener
             userActivity.Name = activity.Name;
             userActivity.Type = activity.Type.ToString();
             userActivity.StartedAt = DateTimeOffset.UtcNow;
-            userActivity.User.Guilds = user.MutualGuilds.Select(x => new Guild()
-            {
-                Id = x.Id,
-                Name = x.Name,
-            });
             userActivity.User = new User
             {
                 Id = user.Id,
-                Username = user.Username,
+                Username =user.Username,
+                NickName = user is SocketGuildUser guildUser ? guildUser.Nickname : null,
+                Guilds = user.MutualGuilds.Select(x => new Guild
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                })
             };
             await _messageService.SendMessage(userActivity);
         }
@@ -116,6 +121,10 @@ public class ActivityListener : IActivityListener
 
     private async Task SendStatusUpdates(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
     {
+        if (user.IsBot)
+        {
+            return;
+        }
         switch (newPresence.Status)
         {
             case UserStatus.Offline:
