@@ -47,6 +47,7 @@ public class ActivityListener : IActivityListener
                     Album = spotifyGame.AlbumTitle,
                     Artists = spotifyGame.Artists,
                     Track = spotifyGame.TrackTitle,
+                    TrackId = spotifyGame.TrackId,
                     DurationInSeconds = spotifyGame.Duration is { TotalSeconds: > 0 }
                         ? (int)spotifyGame.Duration.Value.TotalSeconds
                         : null,
