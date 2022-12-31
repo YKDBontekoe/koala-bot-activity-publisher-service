@@ -36,6 +36,7 @@ internal static class Program
 
                 services.AddTransient<IMessageService, MessageService>();
                 services.AddTransient<IActivityListener, ActivityListener>();
+                services.AddTransient<IStatusListener, StatusListener>();
                 services.AddHostedService<ActivityPublisherWorker>();
             })
             .UseConsoleLifetime()
