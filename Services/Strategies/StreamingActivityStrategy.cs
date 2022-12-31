@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Koala.ActivityPublisherService.Constants;
 using Koala.ActivityPublisherService.Models;
 using Koala.ActivityPublisherService.Models.Activities;
 using Koala.ActivityPublisherService.Services.Strategies.Interfaces;
@@ -13,7 +14,7 @@ public class StreamingActivityStrategy : IActivityStrategy
         var streamingActivity = (StreamingGame)activity;
         return new StreamingActivity
         {
-            Type = ActivityType.Streaming.ToString(),
+            Type = MessageTypes.Streaming,
             Name = streamingActivity.Name,
             StartedAt = DateTimeOffset.Now,
             User = CreateUser(user),

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Koala.ActivityPublisherService.Constants;
 using Koala.ActivityPublisherService.Models;
 using Koala.ActivityPublisherService.Models.Activities;
 using Koala.ActivityPublisherService.Services.Strategies.Interfaces;
@@ -16,7 +17,7 @@ public class SpotifyActivityStrategy : IActivityStrategy
             SpotifyInfo = CreateSpotifyInfo(spotifyGame),
             Details = GetSpotifyGameDetails(spotifyGame),
             Name = activity.Name,
-            Type = activity.Type.ToString(),
+            Type = MessageTypes.Listening,
             StartedAt = DateTimeOffset.UtcNow,
             User = CreateUser(user)
         };

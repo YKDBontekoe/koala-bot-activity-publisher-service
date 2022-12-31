@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Koala.ActivityPublisherService.Constants;
 using Koala.ActivityPublisherService.Models;
 using Koala.ActivityPublisherService.Models.Activities;
 using Koala.ActivityPublisherService.Services.Strategies.Interfaces;
@@ -15,7 +16,7 @@ public class GameActivityStrategy : IActivityStrategy
         return new GameActivity
         {
             Name = gameActivity.Name,
-            Type = ActivityType.Playing.ToString(),
+            Type = MessageTypes.Playing,
             Details = gameActivity.Details,
             GameInfo = CreateGameInfo(gameActivity),
             User = CreateUser(user),
@@ -34,7 +35,7 @@ public class GameActivityStrategy : IActivityStrategy
         {
             ApplicationId = gameActivity.ApplicationId,
             Party = CreateGameParty(gameActivity),
-            Timestamps = gameActivity.Timestamps,
+            Timestamps = CreateGameTimestamps(gameActivity),
         };
     }
 
@@ -69,6 +70,15 @@ public class GameActivityStrategy : IActivityStrategy
                 Id = x.Id,
                 Name = x.Name,
             })
+        };
+    }
+    
+    private static GameTimeStamps CreateGameTimestamps(RichGame gameActivity)
+    {
+        return new GameTimeStamps
+        {
+            Start = gameActivity.Timestamps.Start,
+            End = gameActivity.Timestamps.End,
         };
     }
 }
