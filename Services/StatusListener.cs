@@ -37,7 +37,7 @@ public class StatusListener : IStatusListener
         {
             return;
         }
-        
+
         await SendStatusUpdate(user, newPresence.Status.ToString());
     }
     
