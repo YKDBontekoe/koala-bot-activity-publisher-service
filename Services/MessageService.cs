@@ -37,7 +37,7 @@ public class MessageService : IMessageService
         {
             nameof(GameActivity) => _serviceBusOptions.UserGameQueueName,
             nameof(SpotifyActivity) => _serviceBusOptions.UserMusicQueueName,
-            _ => throw new ArgumentException("Invalid type")
+            _ => _serviceBusOptions.ActivitiesConsumerQueueName
         };
     }
 }
